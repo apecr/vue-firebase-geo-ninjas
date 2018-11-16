@@ -6,6 +6,8 @@
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   name: "GMap",
   data() {
@@ -15,8 +17,8 @@ export default {
     };
   },
   methods: {
-    renderMap(){
-      const map = new google.maps.Map(document.querySelector('#map'), {
+    renderMap() {
+      const map = new google.maps.Map(document.querySelector("#map"), {
         center: {
           lat: this.lat,
           lng: this.lng
@@ -28,14 +30,15 @@ export default {
       });
     }
   },
-  mounted(){
+  mounted() {
     this.renderMap();
+    console.log(firebase.auth().currentUser);
   }
 };
 </script>
 
 <style>
-.google-map{
+.google-map {
   width: 100%;
   height: 100%;
   margin: 0 auto;
