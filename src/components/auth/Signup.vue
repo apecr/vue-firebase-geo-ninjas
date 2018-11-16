@@ -25,6 +25,7 @@
 <script>
 import slugify from "slugify";
 import { db } from "@/firebase/init";
+import firebase from "firebase";
 
 export default {
   name: "Signup",
@@ -39,8 +40,8 @@ export default {
   },
   methods: {
     signup() {
-      if (!this.alias) {
-        return (this.feedback = "You must enter an alias");
+      if (!this.alias || !this.email || !this.password) {
+        return (this.feedback = "You must enter all fields");
       }
       this.feedback = null;
       this.slug = slugify(this.alias, {
@@ -56,7 +57,14 @@ export default {
           if (doc.exists) {
             return (this.feedback = "This alias already exists");
           }
-          this.feedback = 'This is alias is free to use';
+          this.feedback = "This is alias is free to use";
+          firebase
+            .auth()
+            .createUserWithEmailAndPassword(this.email, this.password)
+            .catch(error => {
+              console.error(error);
+              this.feedback = error.message;
+            });
         });
     }
   }

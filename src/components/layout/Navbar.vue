@@ -4,7 +4,11 @@
             <div class="container">
                 <a href="" class="brand-logo left">GeoNinjas!</a>
                 <ul class="right">
-                    <li><a href="">Signup</a></li>
+                    <li>
+                        <a href="">
+                            <router-link :to="{name: 'Signup'}">Signup</router-link>
+                        </a>
+                    </li>
                     <li><a href="">Login</a></li>
                 </ul>
             </div>
@@ -15,14 +19,13 @@
 
 <script>
 export default {
-    name: 'Navbar',
-    data(){
-        return {};
-    }
-}
+  name: "Navbar",
+  data() {
+    return {};
+  }
+};
 </script>
 
 <style>
-
 </style>
 
