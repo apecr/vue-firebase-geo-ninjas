@@ -2,7 +2,7 @@
     <div class="navbar">
         <nav class="deep-purple darken-1">
             <div class="container">
-                <a href="" class="brand-logo left">GeoNinjas!</a>
+                <router-link :to="{name: 'GMap'}">GeoNinjas!</router-link>
                 <ul class="right">
                     <li><router-link :to="{name: 'Signup'}">Signup</router-link></li>
                     <li><router-link :to="{name: 'Login'}">Login</router-link></li>
@@ -25,7 +25,7 @@ export default {
   methods: {
     async logout() {
       await firebase.auth().signOut();
-      this.$router.push({ name: "Signup" });
+      this.$router.push({ name: "Login" });
     }
   }
 };
@@ -33,14 +33,14 @@ export default {
 
 <style>
 .login {
-    max-width: 400px;
-    margin-top: 60px;
+  max-width: 400px;
+  margin-top: 60px;
 }
-.login h2{
-    font-size: 2.4em;
+.login h2 {
+  font-size: 2.4em;
 }
-.login .field{
-    margin-bottom: 16px;
+.login .field {
+  margin-bottom: 16px;
 }
 </style>
 

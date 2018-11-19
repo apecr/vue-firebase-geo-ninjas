@@ -33,8 +33,19 @@ export default {
     };
   },
   methods: {
-    login() {
-      console.log(this.email, this.password);
+    async login() {
+      if (!this.email || !this.password) {
+        return (this.feedback = "Please fill in both fields");
+      }
+      this.feedback = null;
+      try {
+        const userSign = await firebase
+          .auth()
+          .signInWithEmailAndPassword(this.email, this.password);
+        this.$router.push({name: 'GMap'});
+      } catch (e) {
+          this.feedback = e.message;
+      }
     }
   }
 };
