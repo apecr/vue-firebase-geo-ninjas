@@ -7,6 +7,7 @@
 
 <script>
 import firebase from "firebase";
+import { db } from "@/firebase/init";
 
 export default {
   name: "GMap",
@@ -30,9 +31,35 @@ export default {
       });
     }
   },
-  mounted() {
+  async mounted() {
+    // get current user
+    const user = firebase.auth().currentUser;
+    const getPosition = options => {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options);
+      });
+    };
+    // get user geolocation
+    if (navigator.geolocation) {
+      try {
+        const currentPosition = await getPosition({
+          maximumAge: 60000,
+          timeout: 3000
+        });
+        this.lat = currentPosition.coords.latitude;
+        this.lng = currentPosition.coords.longitude;
+        const userSnapshot = await db.collection("users").where('user_id', '==', user.uid).get();
+        await db.collection('users').doc(userSnapshot.docs[0].id).update({
+          geolocation: {
+            lat: currentPosition.coords.latitude,
+            lng: currentPosition.coords.longitude
+          }
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
     this.renderMap();
-    console.log(firebase.auth().currentUser);
   }
 };
 </script>
