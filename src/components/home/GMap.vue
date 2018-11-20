@@ -18,7 +18,7 @@ export default {
     };
   },
   methods: {
-    renderMap() {
+    async renderMap() {
       const map = new google.maps.Map(document.querySelector("#map"), {
         center: {
           lat: this.lat,
@@ -28,6 +28,22 @@ export default {
         maxZoom: 15,
         minZoom: 3,
         streetViewControl: false
+      });
+      const usersSnapshot = await db.collection("users").get();
+      usersSnapshot.docs.map(doc => {
+        const data = doc.data();
+        if (data.geolocation) {
+          const marker = new google.maps.Marker({
+            position: {
+              lat: data.geolocation.lat,
+              lng: data.geolocation.lng
+            },
+            map
+          });
+          marker.addListener("click", _ => {
+            this.$router.push({ name: "ViewProfile", params: { id: doc.id } });
+          });
+        }
       });
     }
   },
@@ -48,13 +64,19 @@ export default {
         });
         this.lat = currentPosition.coords.latitude;
         this.lng = currentPosition.coords.longitude;
-        const userSnapshot = await db.collection("users").where('user_id', '==', user.uid).get();
-        await db.collection('users').doc(userSnapshot.docs[0].id).update({
-          geolocation: {
-            lat: currentPosition.coords.latitude,
-            lng: currentPosition.coords.longitude
-          }
-        });
+        const userSnapshot = await db
+          .collection("users")
+          .where("user_id", "==", user.uid)
+          .get();
+        await db
+          .collection("users")
+          .doc(userSnapshot.docs[0].id)
+          .update({
+            geolocation: {
+              lat: currentPosition.coords.latitude,
+              lng: currentPosition.coords.longitude
+            }
+          });
       } catch (e) {
         console.error(e);
       }
